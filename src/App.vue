@@ -8,8 +8,24 @@
 body {
 	font-family: 'PT Sans', sans-serif;
 	font-weight: 400;
-	font-size: 15px;
+	font-size: 1rem;
 	height: auto;
 	margin: 0;
+}
+
+@media (max-width: 37.5em) {
+
+	html,
+	body {
+		font-size: 0.8rem;
+	}
+}
+
+@media (max-width: 25em) {
+
+	html,
+	body {
+		font-size: 0.7rem;
+	}
 }
 </style>

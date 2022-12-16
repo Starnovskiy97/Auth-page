@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import Vuelidate from 'vuelidate'
 import Toaster from 'v-toaster'
+import loader from "vue-ui-preloader"
 import 'v-toaster/dist/v-toaster.css'
 import './registerServiceWorker'
 
@@ -15,6 +16,7 @@ Vue.config.productionTip = false
 
 Vue.use(Vuelidate)
 Vue.use(Toaster)
+Vue.use(loader)
 
 firebase.initializeApp({
   apiKey: "AIzaSyAV_Y3EHITev7Pp8JSLJvH6zid3no_HbkA",

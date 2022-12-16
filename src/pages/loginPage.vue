@@ -1,5 +1,8 @@
 <template>
 	<div class="container">
+
+		<preloader v-if="loading" />
+
 		<form class="login" @submit.prevent="checkFormLogin">
 			<div class="login__title">Login</div>
 			<div class="login__subtitle">
@@ -41,9 +44,6 @@
 						v-if="$v.password.$dirty && !$v.password.minLength">
 						Min field length - {{ $v.password.$params.minLength.min }}
 					</span>
-					<!--<span class="form__password__question">
-						<a href="#">Forgot password?</a>
-					</span>-->
 				</div>
 				<button class="form__button" type="submit">
 					Login
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import preloader from '@/components/preloader.vue'
 import firebase from "firebase/compat/app";
 import { required, minLength, email } from 'vuelidate/lib/validators'
 
@@ -66,8 +67,12 @@ export default {
 		return {
 			email: '',
 			password: '',
-			error: {}
+			error: '',
+			loading: false
 		}
+	},
+	components: {
+		preloader
 	},
 	validations: {
 		email: { email, required },
@@ -79,6 +84,8 @@ export default {
 				this.$v.$touch()
 				return
 			}
+
+			this.loading = true
 
 			try {
 				await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
@@ -95,6 +102,8 @@ export default {
 			if (this.error === 'auth/wrong-password') this.$toaster.error('The password is invalid')
 			if (this.error === 'auth/user-not-found') this.$toaster.error('User is not found')
 
+			this.error = ''
+			this.loading = false
 		}
 	}
 }
@@ -110,26 +119,26 @@ export default {
 	background-color: rgb(142, 134, 134);
 
 	.login {
-		padding: 20px 10px;
+		padding: 40px 10px;
 		background-color: #ffffff;
-		min-width: 400px;
-		min-height: 350px;
+		max-width: 400px;
+		max-height: 350px;
 		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 	}
 
 	.login__title {
-		font-size: 40px;
+		font-size: 2.5rem;
 		font-weight: 700;
-		line-height: 52/40*100%;
+		line-height: calc(52/40*100%);
 		text-align: center;
 	}
 
 	.login__subtitle {
-		font-size: 18px;
+		font-size: 1.1rem;
 		font-weight: 700;
-		line-height: 23/18*100%;
+		line-height: calc(23/18*100%);
 		text-align: center;
-		margin: 0 0 30px 0;
+		margin: 0 0 2rem 0;
 	}
 
 	.form {
@@ -141,11 +150,11 @@ export default {
 
 		&__password {
 			position: relative;
-			margin: 16px 0 32px 0;
+			margin: 1rem 0 2rem 0;
 
 			&__question {
-				font-size: 10px;
-				line-height: 13/10*100%;
+				font-size: 0.8rem;
+				line-height: calc(13/10*100%);
 				position: absolute;
 				top: 53px;
 				right: 45px;
@@ -159,8 +168,8 @@ export default {
 		}
 
 		&__button {
-			min-width: 370px;
-			min-height: 45px;
+			width: 23rem;
+			height: 3rem;
 			border-radius: 30px;
 			background-color: #e99c28;
 			border: none;
@@ -176,16 +185,16 @@ export default {
 
 		&__register-link {
 			margin: 6px 0 0 0;
-			font-size: 13px;
-			line-height: 18/13*100%;
+			font-size: 0.8rem;
+			line-height: calc(18/13*100%);
 		}
 	}
 }
 
 .input {
-	min-width: 350px;
-	min-height: 45px;
-	padding: 0 0 0 20px;
+	width: 22rem;
+	height: 3rem;
+	padding: 0 0 0 1.2rem;
 	border: 1px solid #eeeeee;
 	border-radius: 30px;
 	outline: none;
@@ -201,9 +210,9 @@ export default {
 
 .text-invalid {
 	position: absolute;
-	left: 35px;
-	bottom: -14px;
-	font-size: 11px;
+	left: 2rem;
+	bottom: -0.9rem;
+	font-size: 0.7rem;
 	color: red;
 }
 </style>

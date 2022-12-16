@@ -1,5 +1,14 @@
 <template>
 	<div class="navbar">
+
+		<router-link
+			v-if="this.userInfo"
+			@click="userInfo"
+			to="/users"
+			class="user-list">
+			User list
+		</router-link>
+
 		<div class="dropdown">
 			<button
 				v-if="this.userInfo"
@@ -7,20 +16,21 @@
 				class="dropbtn">
 				{{ userInfo.name }}
 			</button>
+
 			<router-link
 				v-else
-				tag="button"
 				to="/login"
 				class="dropbtn">
 				Sign in
 			</router-link>
+
 			<div id="myDropdown"
 				class="dropdown-content"
 				v-if="openDropdown">
-				<!--<a href="#">Profile</a>-->
 				<a href="#" @click="logoutUser">Sign out</a>
 			</div>
 		</div>
+
 	</div>
 </template>
 
@@ -33,7 +43,6 @@ export default {
 		return {
 			openDropdown: false,
 			userInfo: null,
-			userId: null
 		}
 	},
 	methods: {
@@ -47,7 +56,9 @@ export default {
 			const userId = firebase.auth().currentUser.uid
 			this.userInfo = (await firebase.database().ref(`/users/${userId}`).once('value')).val()
 
-			this.$emit('userInfo', this.userInfo)
+			if (this.userInfo) {
+				this.$emit('userInfo', this.userInfo)
+			}
 		} catch (err) {
 			console.log(err)
 		}
@@ -57,31 +68,51 @@ export default {
 
 <style lang="scss">
 .navbar {
-	min-height: 50px;
+	max-height: 4rem;
 	background-color: grey;
 	text-align: end;
+	display: flex;
+	justify-content: flex-end;
 }
 
 .dropbtn {
-	margin-right: 150px;
-	min-height: 100%;
-	min-width: 100px;
+	display: flex;
+	justify-content: center;
+	margin: 0 8rem 0 3rem;
+	width: inherit;
+	text-decoration: none;
 	background-color: #e99c28;
 	color: white;
-	padding: 16px;
-	font-size: 16px;
+	padding: 1.3rem;
+	font-size: 1rem;
 	border: none;
 	cursor: pointer;
 }
 
+.user-list {
+	display: flex;
+	justify-content: center;
+	max-width: 4rem;
+	min-height: 100%;
+	text-decoration: none;
+	background-color: #e99c28;
+	color: white;
+	padding: 1rem;
+	font-size: 1rem;
+	border: none;
+}
+
+@media (max-width: 500px) {
+	.dropbtn {
+		margin: 0 3rem 0 2rem;
+	}
+}
+
+.user-list:hover,
+.user-list:focus,
 .dropbtn:hover,
 .dropbtn:focus {
 	background-color: #fcb03e;
-}
-
-.dropdown {
-	position: relative;
-	display: inline-block;
 }
 
 .dropdown-content {

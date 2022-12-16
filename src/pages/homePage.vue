@@ -1,30 +1,38 @@
 <template>
 	<div class="home-page">
-		<nav-bar
-			class="home-page__nav-bar"
-			@userInfo="userInfo" />
-		<div class="home-page__container">
-			<h1>Hello {{ user.name }} !</h1>
+
+		<preloader v-if="!user" />
+
+		<div>
+			<nav-bar
+				class="home-page__nav-bar"
+				@userInfo="userInfo" />
+			<div class="home-page__container">
+				<h1>Hello {{ user }} !</h1>
+			</div>
 		</div>
+
 	</div>
 </template>
 
 <script>
 import navBar from '@/components/navBar.vue'
+import preloader from '@/components/preloader.vue'
 
 export default {
 	name: 'homePage',
 	data() {
 		return {
-			user: {}
+			user: null,
 		}
 	},
 	components: {
-		navBar
+		navBar,
+		preloader
 	},
 	methods: {
 		userInfo(userInfo) {
-			this.user = userInfo
+			this.user = Object.values(userInfo)[0]
 		}
 	}
 

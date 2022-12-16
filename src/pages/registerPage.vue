@@ -1,5 +1,8 @@
 <template>
 	<div class="container">
+
+		<preloader v-if="loading" />
+
 		<form class="register" @submit.prevent="checkFormRegister">
 			<div class="register__title">Register</div>
 			<div class="register__subtitle">Please enter your Name, Login and your Password
@@ -84,17 +87,23 @@
 </template>
 
 <script>
+import preloader from '@/components/preloader.vue'
 import firebase from "firebase/compat/app";
 import { required, minLength, email, sameAs } from 'vuelidate/lib/validators'
 
 export default {
 	name: 'loginPage',
+	components: {
+		preloader
+	},
 	data() {
 		return {
 			email: '',
 			password: '',
 			repeatPassword: '',
-			username: ''
+			username: '',
+			error: '',
+			loading: false
 		}
 	},
 	validations: {
@@ -110,6 +119,8 @@ export default {
 				return
 			}
 
+			this.loading = true
+
 			try {
 				const data = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
 
@@ -118,8 +129,14 @@ export default {
 
 				this.$router.push(`/#user=${this.username}`)
 			} catch (err) {
-				console.log(err)
+				this.error = err.code
+				console.log(err.code)
 			}
+
+			if (this.error === 'auth/email-already-in-use') this.$toaster.error('Email-already-in-use')
+
+			this.error = ''
+			this.loading = false
 		}
 	}
 }
@@ -127,26 +144,26 @@ export default {
 
 <style lang="scss" scoped>
 .register {
-	padding: 20px 10px 50px 10px;
+	padding: 20px 10px 70px 10px;
 	background-color: #ffffff;
-	min-width: 400px;
-	min-height: 400px;
+	max-width: 400px;
+	max-height: 400px;
 	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .register__title {
-	font-size: 40px;
+	font-size: 2.5rem;
 	font-weight: 700;
-	line-height: 52/40*100%;
+	line-height: calc(52/40*100%);
 	text-align: center;
 }
 
 .register__subtitle {
-	font-size: 18px;
+	font-size: 1.1rem;
 	font-weight: 700;
-	line-height: 23/18*100%;
+	line-height: calc(23/18*100%);
 	text-align: center;
-	margin: 0 0 30px 0;
+	margin: 0 0 2rem 0;
 }
 
 .form__password {
@@ -154,7 +171,7 @@ export default {
 }
 
 input {
-	margin-bottom: 16px;
+	margin-bottom: 1rem;
 }
 
 .text-invalid {
