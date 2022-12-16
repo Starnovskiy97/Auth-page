@@ -1,0 +1,1 @@
+.users__container{height:70vh;flex-direction:column}.users__container,.users__link{display:flex;justify-content:center;align-items:center}.users__link{text-decoration:none;padding:.8rem;width:4rem;color:#fff;border-radius:10px;background-color:#e99c28}.users__link:focus,.users__link:hover{background-color:#fcb03e}.users__list{list-style-type:none;font-size:2rem}
