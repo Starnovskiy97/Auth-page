@@ -2,8 +2,8 @@
 	<div class="navbar">
 
 		<router-link
-			v-if="this.userInfo"
-			@click="userInfo"
+			v-if="this.userName"
+			@click="userName"
 			to="/users"
 			class="user-list">
 			User list
@@ -11,10 +11,10 @@
 
 		<div class="dropdown">
 			<button
-				v-if="this.userInfo"
+				v-if="this.userName"
 				@click="openDropdown = !openDropdown"
 				class="dropbtn">
-				{{ userInfo.name }}
+				{{ userName }}
 			</button>
 
 			<router-link
@@ -42,7 +42,7 @@ export default {
 	data() {
 		return {
 			openDropdown: false,
-			userInfo: null,
+			userName: null,
 		}
 	},
 	methods: {
@@ -52,16 +52,16 @@ export default {
 		}
 	},
 	async mounted() {
-		try {
-			const userId = firebase.auth().currentUser.uid
-			this.userInfo = (await firebase.database().ref(`/users/${userId}`).once('value')).val()
-
-			if (this.userInfo) {
-				this.$emit('userInfo', this.userInfo)
+		firebase.auth().onAuthStateChanged(async user => {
+			if (user) {
+				try {
+					const userId = firebase.auth().currentUser.uid
+					this.userName = (await firebase.database().ref(`/users/${userId}/name`).once('value')).val()
+				} catch (err) {
+					console.log(err)
+				}
 			}
-		} catch (err) {
-			console.log(err)
-		}
+		})
 	}
 }
 </script>

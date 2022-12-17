@@ -1,14 +1,12 @@
 <template>
 	<div class="home-page">
 
-		<preloader v-if="!user" />
+		<preloader v-if="loading" />
 
 		<div>
-			<nav-bar
-				class="home-page__nav-bar"
-				@userInfo="userInfo" />
+			<nav-bar class="home-page__nav-bar" />
 			<div class="home-page__container">
-				<h1>Hello {{ user }} !</h1>
+				<h1>Hello {{ userName }} !</h1>
 			</div>
 		</div>
 
@@ -18,25 +16,34 @@
 <script>
 import navBar from '@/components/navBar.vue'
 import preloader from '@/components/preloader.vue'
+import firebase from "firebase/compat/app";
 
 export default {
 	name: 'homePage',
 	data() {
 		return {
-			user: null,
+			userName: null,
+			loading: false
 		}
 	},
 	components: {
 		navBar,
 		preloader
 	},
-	methods: {
-		userInfo(userInfo) {
-			this.user = Object.values(userInfo)[0]
-		}
+	mounted() {
+		firebase.auth().onAuthStateChanged(async user => {
+			if (user) {
+				try {
+					this.loading = true
+					const userId = firebase.auth().currentUser.uid
+					this.userName = (await firebase.database().ref(`/users/${userId}/name`).once('value')).val()
+					this.loading = false
+				} catch (err) {
+					console.log(err)
+				}
+			}
+		})
 	}
-
-
 }
 </script>
 

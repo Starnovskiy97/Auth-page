@@ -3,8 +3,7 @@
 	<div class="users">
 		<preloader v-if="loading" />
 
-		<div
-			class="users__main">
+		<div class="users__main">
 			<nav-bar />
 
 			<div class="users__container">
